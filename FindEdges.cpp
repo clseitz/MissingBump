@@ -14,7 +14,10 @@ Mat src; Mat src_gray; Mat grayThresh;
 int thresh = 200;
 int max_thresh = 255;
 RNG rng(12345);
+
 bool debug  = true;
+
+
 /// Function header
 void findEdges(int, void*,std::string name);
 void prepPic(int, void* , std::string name);
@@ -36,13 +39,10 @@ int main( int argc, char** argv )
   findEdges( 0, 0 , name);
   
   }
-  cout<<"all areas"<< v_area.size()<<endl;
 
   double sum = std::accumulate(v_area.begin(), v_area.end(), 0.0);
   double mean = sum / v_area.size();
-  double rms = sqrt( ( std::inner_product( v_area.begin(), v_area.end(), v_area.begin(), 0 ) ) / static_cast<double>( v_area.size() ) );
-
-  cout<<"mean "<<mean << " stdev: "<<rms<<endl;
+  cout<<"mean "<<mean <<endl;
 
 
   //  waitKey(0);
@@ -101,6 +101,7 @@ for( int i = 0; i< contours.size(); i++ )
       Rect r = boundingRect(contours[i]);
       rectangle(circles_squares_all,Point(r.x,r.y), Point(r.x+r.width,r.y+r.height), Scalar(0,0,255),3,8,0);
       v_area.push_back(r.area());
+      //cout<< r.area() <<" "<<r.height<<" "<<r.width <<endl;
       if((r.area() > 1500  and r.area() < 3000) and  (r.height/r.width < 1.2 and r.width/r.height < 1.2)){
 	  rectangle(circles_squares,Point(r.x,r.y), Point(r.x+r.width,r.y+r.height), Scalar(0,0,255),3,8,0);
 	  rectangle(src,Point(r.x,r.y), Point(r.x+r.width,r.y+r.height), Scalar(0,0,255),3,8,0);
@@ -110,9 +111,9 @@ for( int i = 0; i< contours.size(); i++ )
     }
 
   cout<<countholes<<endl;
-  imwrite( name + "_P6_black_circle.jpg", circles );
-  imwrite( name + "_P7_black_circle_square_all.jpg", circles_squares_all );
-  imwrite( name+ "_P8_black_circle_square.jpg", circles_squares );
+  if (debug) imwrite( name + "_P6_black_circle.jpg", circles );
+  if (debug) imwrite( name + "_P7_black_circle_square_all.jpg", circles_squares_all );
+  if (debug) imwrite( name+ "_P8_black_circle_square.jpg", circles_squares );
   imwrite( name + "_P9_orig_withsquar.jpg", src );
 
 
