@@ -15,19 +15,22 @@ int thresh = 200;
 int max_thresh = 255;
 RNG rng(12345);
 
-bool debug  = true;
+bool debug  = false;
 
 
 /// Function header
 void findEdges(int, void*,std::string name);
 void prepPic(int, void* , std::string name);
 vector <double> v_area;
+vector <int> v_bumps;
+
 /** @function main */
 int main( int argc, char** argv )
 {
   /// Load source image and convert it to gray
   v_area.clear();
-  cout <<  argc <<endl;
+  v_bumps.clear();
+
   for (int i = 1; i < argc; i++){
   src = imread( argv[i], 1 );
   
@@ -42,8 +45,10 @@ int main( int argc, char** argv )
 
   double sum = std::accumulate(v_area.begin(), v_area.end(), 0.0);
   double mean = sum / v_area.size();
-  cout<<"mean "<<mean <<endl;
+  cout<<"mean area for bumps: "<<mean <<endl;
 
+  int sumbumps = std::accumulate(v_bumps.begin(), v_bumps.end(), 0.0);
+  cout<< "total bumps found: "<<sumbumps<<endl;
 
   //  waitKey(0);
   return(0);
@@ -110,11 +115,14 @@ for( int i = 0; i< contours.size(); i++ )
 
     }
 
-  cout<<countholes<<endl;
-  if (debug) imwrite( name + "_P6_black_circle.jpg", circles );
-  if (debug) imwrite( name + "_P7_black_circle_square_all.jpg", circles_squares_all );
-  if (debug) imwrite( name+ "_P8_black_circle_square.jpg", circles_squares );
-  imwrite( name + "_P9_orig_withsquar.jpg", src );
+ cout<<"Found good bumps: "<< countholes << endl;
+ v_bumps.push_back(countholes);
+ if (debug) imwrite( name + "_P6_black_circle.jpg", circles );
+ if (debug) imwrite( name + "_P7_black_circle_square_all.jpg", circles_squares_all );
+ if (debug) imwrite( name+ "_P8_black_circle_square.jpg", circles_squares );
+
+ src.convertTo( src, -1, 1.34, 0);
+ imwrite( name + "_P9_orig_withsquar.jpg", src );
 
 
 
